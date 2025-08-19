@@ -1,6 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 
 const Navbar = () => {
@@ -30,12 +31,16 @@ const Navbar = () => {
 
           {/* Desktop CTA */}
           <div className="hidden md:flex items-center space-x-4">
-            <Button variant="ghost" className="text-foreground hover:text-accent">
-              Sign In
-            </Button>
-            <Button className="btn-hero">
+            <Link href={'/sign-in'}>
+              <Button variant="ghost" className="text-foreground hover:text-accent">
+                Sign In
+              </Button>
+            </Link>
+            <Link href={'/dashboard'}>
+              <Button className="btn-hero">
               Get Started
             </Button>
+            </Link>
           </div>
 
           {/* Mobile menu button */}
