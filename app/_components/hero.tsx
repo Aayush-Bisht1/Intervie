@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Play, Sparkles } from "lucide-react";
 import heroImage from "../_assets/hero-interview.jpg"; 
@@ -17,7 +18,7 @@ const Hero = () => {
             
             <h1 className="text-5xl lg:text-6xl font-bold mb-6 leading-tight">
               Master Your
-              <span className="gradient-text"> Interview Skills</span>
+              <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent"> Interview Skills</span>
               <br />
               with AI & Experts
             </h1>
@@ -28,11 +29,11 @@ const Hero = () => {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-              <Button className="btn-hero group">
+              <Button className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground font-semibold px-8 py-4 rounded-xl hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl">
                 Start AI Interview
                 <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Button>
-              <Button className="btn-hero-outline group">
+              <Button className="border-2 border-primary text-primary bg-transparent font-semibold px-8 py-4 rounded-xl hover:bg-primary hover:text-primary-foreground transition-all duration-300">
                 <Play className="mr-2 w-4 h-4" />
                 Watch Demo
               </Button>

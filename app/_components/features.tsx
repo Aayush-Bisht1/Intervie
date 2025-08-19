@@ -1,3 +1,4 @@
+"use client";
 import { Bot, Users, Code, Video, MessageSquare, FileText } from "lucide-react";
 
 const Features = () => {
@@ -47,7 +48,7 @@ const Features = () => {
         <div className="text-center mb-16">
           <h2 className="text-4xl lg:text-5xl font-bold mb-6">
             Everything You Need to
-            <span className="gradient-text"> Ace Your Interviews</span>
+            <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent"> Ace Your Interviews</span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
             From AI-powered practice sessions to live expert interviews, we provide 
@@ -62,7 +63,7 @@ const Features = () => {
             return (
               <div 
                 key={index}
-                className="feature-card group"
+                className="bg-card border border-border rounded-2xl p-8 hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
               >
                 <div className={`w-12 h-12 rounded-xl bg-gradient-to-r ${feature.gradient} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}>
                   <Icon className="w-6 h-6 text-white" />

@@ -1,3 +1,4 @@
+"use client";
 import { Upload, Brain, Video, TrendingUp } from "lucide-react";
 
 const HowItWorks = () => {
@@ -34,7 +35,7 @@ const HowItWorks = () => {
         {/* Header */}
         <div className="text-center mb-16">
           <h2 className="text-4xl lg:text-5xl font-bold mb-6">
-            How <span className="gradient-text">Intervie</span> Works
+            How <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Intervie</span> Works
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
             From upload to success in just four simple steps. 
@@ -53,7 +54,7 @@ const HowItWorks = () => {
                   <div className="hidden lg:block absolute top-16 left-full w-full h-0.5 bg-gradient-to-r from-accent to-transparent z-0" />
                 )}
                 
-                <div className="feature-card text-center relative z-10">
+                <div className="bg-card border border-border rounded-2xl p-8 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 text-center relative z-10">
                   {/* Step Number */}
                   <div className="text-6xl font-bold text-accent/20 mb-4">
                     {step.step}
