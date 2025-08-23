@@ -15,7 +15,7 @@ const CTA = () => {
       <div className="max-w-4xl mx-auto">
         <div className="relative rounded-3xl overflow-hidden">
           {/* Background Gradient */}
-          <div className="absolute inset-0 bg-gradient-to-br from-hero-primary via-hero-secondary to-accent opacity-90"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-purple-600 to-cyan-500"></div>
           
           {/* Content */}
           <div className="relative px-8 py-16 text-center text-white">
@@ -40,12 +40,12 @@ const CTA = () => {
             
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button className="bg-white text-hero-primary hover:bg-white/90 font-semibold px-8 py-4 rounded-xl group">
+              <Button className="bg-white text-blue-600 hover:bg-gray-100 font-semibold px-8 py-4 rounded-xl group shadow-lg">
                 Start Free Trial
                 <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Button>
               
-              <Button className="border-2 border-white text-white bg-transparent hover:bg-white hover:text-hero-primary font-semibold px-8 py-4 rounded-xl transition-all duration-300">
+              <Button className="border-2 border-white text-white bg-transparent hover:bg-white hover:text-blue-600 font-semibold px-8 py-4 rounded-xl transition-all duration-300">
                 Book Expert Session
               </Button>
             </div>

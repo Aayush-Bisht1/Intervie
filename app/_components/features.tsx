@@ -7,37 +7,37 @@ const Features = () => {
       icon: Bot,
       title: "AI Mock Interviews",
       description: "Practice with AI interviewers that adapt to your resume and target role. Get instant feedback and improve your responses.",
-      gradient: "from-hero-primary to-hero-secondary",
+      gradient: "from-blue-600 to-purple-600",
     },
     {
       icon: Users,
       title: "Expert Interviewers",
       description: "Connect with industry professionals for realistic interview experiences and personalized guidance.",
-      gradient: "from-accent to-hero-accent",
+      gradient: "from-cyan-500 to-blue-600",
     },
     {
       icon: Code,
       title: "Live Coding Platform",
       description: "Code in real-time with collaborative editors, multiple language support, and instant execution.",
-      gradient: "from-hero-secondary to-accent",
+      gradient: "from-purple-600 to-cyan-500",
     },
     {
       icon: Video,
       title: "Video Interviews",
       description: "High-quality video calls with screen sharing, recording capabilities, and seamless connectivity.",
-      gradient: "from-primary to-hero-primary",
+      gradient: "from-indigo-600 to-blue-600",
     },
     {
       icon: MessageSquare,
       title: "Interactive Whiteboard",
       description: "Solve system design problems and algorithms on a shared digital whiteboard with your interviewer.",
-      gradient: "from-hero-accent to-hero-secondary",
+      gradient: "from-teal-500 to-purple-600",
     },
     {
       icon: FileText,
       title: "Resume Analysis",
       description: "AI analyzes your resume to create targeted questions and identify areas for improvement.",
-      gradient: "from-accent to-primary",
+      gradient: "from-cyan-500 to-indigo-600",
     },
   ];
 
@@ -48,7 +48,7 @@ const Features = () => {
         <div className="text-center mb-16">
           <h2 className="text-4xl lg:text-5xl font-bold mb-6">
             Everything You Need to
-            <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent"> Ace Your Interviews</span>
+            <span className="bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent"> Ace Your Interviews</span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
             From AI-powered practice sessions to live expert interviews, we provide 
@@ -63,7 +63,7 @@ const Features = () => {
             return (
               <div 
                 key={index}
-                className="bg-card border border-border rounded-2xl p-8 hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+                className="group bg-card border border-border rounded-2xl p-8 hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-300 hover:-translate-y-1"
               >
                 <div className={`w-12 h-12 rounded-xl bg-gradient-to-r ${feature.gradient} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}>
                   <Icon className="w-6 h-6 text-white" />

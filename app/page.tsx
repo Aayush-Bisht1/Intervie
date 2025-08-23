@@ -6,6 +6,7 @@ import Features from "./_components/features";
 import HowItWorks from "./_components/how-it-works";
 import CTA from "./_components/cta";
 import Footer from "./_components/footer";
+import Pricing from "./_components/pricing";
 
 export default function Home() {
   return (
@@ -15,6 +16,7 @@ export default function Home() {
       <Features />
       <HowItWorks />
       <CTA />
+      <Pricing />
       <Footer />
     </div>
   );
