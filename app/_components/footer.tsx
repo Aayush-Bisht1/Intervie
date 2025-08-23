@@ -1,5 +1,7 @@
 "use client";
 import { Github, Twitter, Linkedin, Mail } from "lucide-react";
+import Image from "next/image";
+import logo from '../_assets/intervie-logo.png'
 
 const Footer = () => {
   const navigation = {
@@ -42,10 +44,15 @@ const Footer = () => {
           {/* Brand */}
           <div className="md:col-span-2">
             <div className="flex items-center mb-6">
+              <Image
+                src={logo}
+                alt="AI-powered interview platform logo"
+                className="w-16 h-16 -mr-2"
+              />
               <span className="text-3xl font-bold text-white">Intervie</span>
             </div>
             <p className="text-primary-foreground/80 mb-6 max-w-md">
-              Empowering professionals to excel in interviews through AI-powered practice 
+              Empowering professionals to excel in interviews through AI-powered practice
               and expert guidance.
             </p>
             <div className="flex space-x-4">
