@@ -56,7 +56,7 @@ const HowItWorks = () => {
                 
                 <div className="bg-white/80 backdrop-blur-sm border border-gray-200 rounded-2xl p-8 hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-300 hover:-translate-y-1 text-center relative z-10">
                   {/* Step Number */}
-                  <div className="text-6xl font-bold text-blue-600/20 mb-4">
+                  <div className="text-6xl font-bold text-blue-700/30 mb-4">
                     {step.step}
                   </div>
                   

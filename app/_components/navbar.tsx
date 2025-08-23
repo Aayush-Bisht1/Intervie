@@ -43,7 +43,7 @@ const Navbar = () => {
           {/* Desktop CTA */}
           <div className="hidden md:flex items-center space-x-4">
             <Link href="/sign-in">
-              <Button variant="ghost" className="text-gray-700 hover:text-blue-600 font-medium">
+              <Button className="justify-start text-gray-700 bg-white hover:bg-white hover:text-gray-800 font-semibold shadow-md">
                 Sign In
               </Button>
             </Link>
@@ -90,9 +90,9 @@ const Navbar = () => {
               >
                 Pricing
               </a>
-              <div className="flex flex-col space-y-2 pt-4">
+              {/* <div className="flex flex-col space-y-2 pt-4"> */}
                 <Link href="/sign-in">
-                  <Button variant="ghost" className="justify-start text-gray-700 hover:text-blue-600">
+                  <Button variant="ghost" className="justify-start text-gray-700 bg-gray-100 hover:text-blue-900 font-semibold shadow-md">
                     Sign In
                   </Button>
                 </Link>
@@ -101,7 +101,7 @@ const Navbar = () => {
                     Get Started
                   </Button>
                 </Link>
-              </div>
+              {/* </div> */}
             </div>
           </div>
         )}
