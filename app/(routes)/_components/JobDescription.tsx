@@ -5,7 +5,7 @@ import { Textarea } from "@/components/ui/textarea"
 
 function JobDescription({onHandleInputChange}: any) {
     return (
-        <div className='my-4 flex flex-col gap-4 w-full max-w-4xl mx-auto'>
+        <div className='my-4 flex flex-col gap-4 w-full'>
             <div>
                 <Label htmlFor="jobTitle">Job Title</Label>
                 <Input placeholder="Ex. Full Stack Developer" onChange={(e) => onHandleInputChange('jobTitle', e.target.value)} />
