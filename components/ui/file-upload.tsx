@@ -47,10 +47,8 @@ export const FileUpload = ({ onChange }: FileUploadProps) => {
     multiple: false,
     noClick: true,
     accept: {
-      'application/pdf': ['.pdf'],
-      'application/msword': ['.doc'],
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx']
-    },
+      'application/pdf': ['.pdf']
+      },
     onDrop: handleFileChange,
     onError: (err) => {
       console.log(err);
@@ -74,7 +72,7 @@ export const FileUpload = ({ onChange }: FileUploadProps) => {
           ref={fileInputRef}
           id="file-upload-handle"
           type="file"
-          accept=".pdf,.doc,.docx"
+          accept=".pdf"
           onChange={(e) => handleFileChange(Array.from(e.target.files || []))}
           className="hidden"
         />
