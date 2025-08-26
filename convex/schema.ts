@@ -9,10 +9,10 @@ export default defineSchema({
     }),
     InterviewSessionTable: defineTable({
         userId: v.id("UserTable"),
-        resumeUrl: v.optional(v.string()),
+        resumeUrl: v.union(v.string(),v.null()),
         interviewQuestions: v.any(),
         status: v.string(),
-        jobTitle: v.optional(v.string()),
-        jobDescription: v.optional(v.string())
+        jobTitle: v.union(v.string(),v.null()),
+        jobDescription: v.union(v.string(),v.null())
     })
 })
