@@ -58,6 +58,10 @@ function CreateIntDialog() {
                     'Content-Type': 'multipart/form-data'
                 }
             })
+            if(res?.data?.status == 429){
+                console.log(res?.data?.result);
+                return;
+            }
             console.log(res);
 
             const userid = await getUserId();
@@ -126,7 +130,7 @@ function CreateIntDialog() {
                         <DialogClose asChild>
                             <Button
                                 variant="outline"
-                                className="bg-gray-50 hover:bg-gray-100 text-gray-700 border-gray-300"
+                                className="bg-gray-50 hover:bg-gray-100 text-gray-700 hover:text-gray-800 border-gray-300"
                             >
                                 Cancel
                             </Button>

@@ -3,6 +3,8 @@ import ImageKit from "imagekit";
 // import pdf from 'pdf-parse';
 import { generateInterviewQuestions } from "@/lib/resumeProcessor";
 import { handleCorsOptions, withCorsJson } from "@/lib/cors";
+import { aj } from "@/utils/arcjet";
+import { currentUser } from "@clerk/nextjs/server";
 
 var imagekit = new ImageKit({
     publicKey: process.env.IMAGEKIT_PUBLIC_KEY!,
@@ -24,19 +26,28 @@ export async function POST(req: NextRequest) {
     if (!file && !jd.jobdescription && !jd.jobtitle) {
         return withCorsJson(req, { error: 'No file  && JD is uploaded' }, { status: 400 });
     }
+
+    const user = await currentUser();
+    const decision = await aj.protect(req, { userId: user?.primaryEmailAddress?.emailAddress ?? '', requested: 1 }); // Deduct 1 tokens from the bucket
+    console.log("Arcjet decision", decision);
+    // @ts-ignore
+    if (decision?.reason?.remaining === 0) {
+        return withCorsJson(req,{result: 'No token is left. Try after 24 hrs'},{status: 429})
+    }
+
     let imagekitUrl = '';
     let extractedText = '';
     let interviewQuestions: string[] = [];
     if (file) {
         try {
             if (file.type !== 'application/pdf') {
-                return withCorsJson(req, { 
-                    error: 'Invalid file type. Please upload a PDF file.' 
+                return withCorsJson(req, {
+                    error: 'Invalid file type. Please upload a PDF file.'
                 }, { status: 400 });
             }
             if (file.size > 10 * 1024 * 1024) {
-                return withCorsJson(req, { 
-                    error: 'File too large. Please upload a PDF smaller than 10MB.' 
+                return withCorsJson(req, {
+                    error: 'File too large. Please upload a PDF smaller than 10MB.'
                 }, { status: 400 });
             }
 
