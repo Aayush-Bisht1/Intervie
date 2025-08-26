@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import ImageKit from "imagekit";
-import pdf from 'pdf-parse';
+// import pdf from 'pdf-parse';
 import { processResumeWithAI, generateInterviewQuestions, ResumeData } from "@/lib/resumeProcessor";
 import { handleCorsOptions, withCorsJson } from "@/lib/cors";
 
@@ -40,8 +40,14 @@ export async function POST(req: NextRequest) {
                 useUniqueFileName: true
             });
             imagekitUrl = upload.url;
-            const pdfData = await pdf(buffer);
-            extractedText = pdfData.text;
+            try {
+                const pdfParse = require('pdf-parse/lib/pdf-parse');
+                const pdfData = await pdfParse(buffer);
+                extractedText = pdfData.text;
+                console.log(extractedText.length);
+            } catch (error) {
+                return withCorsJson(req, { error: 'Failed to extract text from pdf file' }, { status: 500 })
+            }
             if (!extractedText.trim()) {
                 return withCorsJson(req, { error: 'No text content found in PDF' }, { status: 400 });
             }
