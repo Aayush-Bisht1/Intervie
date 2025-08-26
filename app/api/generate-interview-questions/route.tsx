@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import ImageKit from "imagekit";
 // import pdf from 'pdf-parse';
-import { processResumeWithAI, generateInterviewQuestions, ResumeData } from "@/lib/resumeProcessor";
+import { generateInterviewQuestions } from "@/lib/resumeProcessor";
 import { handleCorsOptions, withCorsJson } from "@/lib/cors";
 
 var imagekit = new ImageKit({
@@ -26,10 +26,20 @@ export async function POST(req: NextRequest) {
     }
     let imagekitUrl = '';
     let extractedText = '';
-    let resumeData: ResumeData;
     let interviewQuestions: string[] = [];
     if (file) {
         try {
+            if (file.type !== 'application/pdf') {
+                return withCorsJson(req, { 
+                    error: 'Invalid file type. Please upload a PDF file.' 
+                }, { status: 400 });
+            }
+            if (file.size > 10 * 1024 * 1024) {
+                return withCorsJson(req, { 
+                    error: 'File too large. Please upload a PDF smaller than 10MB.' 
+                }, { status: 400 });
+            }
+
             const bytes = await file.arrayBuffer();
             const buffer = Buffer.from(bytes);
             const upload = await imagekit.upload({
@@ -52,19 +62,15 @@ export async function POST(req: NextRequest) {
                 return withCorsJson(req, { error: 'No text content found in PDF' }, { status: 400 });
             }
             try {
-                resumeData = await processResumeWithAI(extractedText);
-            } catch (aiError) {
-                return withCorsJson(req, { aiError: 'Failed to analyze resume' }, { status: 500 });
-            }
-            try {
-                interviewQuestions = await generateInterviewQuestions(resumeData);
+                interviewQuestions = await generateInterviewQuestions(extractedText);
             } catch (aiError) {
                 return withCorsJson(req, { aiError: 'Failed to generate Interview Questions' }, { status: 500 });
             }
             return withCorsJson(req, {
                 success: true,
                 message: 'resume uploaded,extracted,processed and generated questions',
-                interviewQuestions
+                interviewQuestions,
+                resumeUrl: imagekitUrl,
             }, { status: 200 })
         } catch (error) {
             return withCorsJson(req, { error: 'Error generating questions from resume file' }, { status: 500 });
@@ -72,21 +78,18 @@ export async function POST(req: NextRequest) {
     }
     if (jd.jobdescription && jd.jobtitle) {
         try {
-            extractedText = `${jd.jobtitle} and its job desription ${jd.jobdescription}`;
+            extractedText = `Job Title: ${jd.jobtitle}\n\nJob Description: ${jd.jobdescription}`;
             try {
-                resumeData = await processResumeWithAI(extractedText);
-            } catch (aiError) {
-                return withCorsJson(req, { aiError: 'Failed to analyze resume' }, { status: 500 })
-            }
-            try {
-                interviewQuestions = await generateInterviewQuestions(resumeData);
+                interviewQuestions = await generateInterviewQuestions(extractedText);
             } catch (aiError) {
                 return withCorsJson(req, { aiError: 'Failed to generate Interview Questions' }, { status: 500 });
             }
             return withCorsJson(req, {
                 success: true,
                 message: 'job title and description- extracted,processed and generated questions',
-                interviewQuestions
+                interviewQuestions,
+                jobTitle: jd.jobtitle,
+                JobDescription: jd.jobdescription
             }, { status: 200 })
         } catch (error) {
             return withCorsJson(req, { error: 'Error generating questions from Job Title and Description' }, { status: 500 });

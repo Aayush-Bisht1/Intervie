@@ -22,7 +22,7 @@ function Provider({ children }: any) {
                 email: user?.primaryEmailAddress?.emailAddress || "",
                 imageUrl: user?.imageUrl || ""
             });
-            console.log(result);
+            // console.log(result);
             setUserDetail(result);
         }
     }

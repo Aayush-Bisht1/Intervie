@@ -1,28 +1,23 @@
 import { v } from "convex/values";
 import { mutation } from "./_generated/server";
 
-export const createNewInterviewSession = mutation({
+export const saveInterviewQuestions = mutation({
     args: {
-        userId: v.id("UserTable"),
-        resumeUrl: v.string(),
-        interviewQuestions: v.any(),
-        status: v.string(),
-        jobTitle: v.optional(v.string()),
-        jobDescription: v.optional(v.string())
+        uid: v.id('UserTable'),
+        resumeUrl: v.optional(v.string()),
+        jobtitle: v.optional(v.string()),
+        jobdescription: v.optional(v.string()),
+        questions: v.any()
     },
-    handler: async (ctx, args) => {
-        const data = {
-            userId: args.userId,
+    handler: async (ctx,args) => {
+        const result = await ctx.db.insert('InterviewSessionTable',{
+            userId: args.uid,
             resumeUrl: args.resumeUrl,
-            interviewQuestions: args.interviewQuestions,
-            status: args.status
-        }
-        const result = await ctx.db.insert("InterviewSessionTable", {
-            ...data
-        });
-        console.log(result);
-        return {
-            ...data
-        }
+            interviewQuestions: args.questions,
+            jobTitle: args.jobtitle,
+            jobDescription: args.jobdescription,
+            status: 'Draft'
+        })
+        return result;
     }
 }) 

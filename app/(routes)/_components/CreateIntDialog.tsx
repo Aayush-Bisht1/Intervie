@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import {
     Dialog,
     DialogClose,
@@ -14,12 +14,22 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import ResumeUpload from './ResumeUpload'
 import JobDescription from './JobDescription'
 import axios from 'axios'
+import { useMutation } from 'convex/react'
+import { api } from '@/convex/_generated/api'
+import { useUserDetailContext } from '@/app/Provider'
+import { userDetailContext } from '@/context/userDetailContext'
 
 function CreateIntDialog() {
     const [formDataJD, setFormDataJD] = useState<any>();
     const [file, setFile] = useState<File | null>();
     const [loading, setLoading] = useState(false);
-    
+    const { userDetail, setUserDetail } = useContext(userDetailContext);
+    const saveInterviewQuestions = useMutation(api.interview.saveInterviewQuestions);
+
+    async function getUserId(){
+        const userid = await userDetail.then((res: any) => res._id);
+        return userid;
+    }
     const onHandleInputChange = (field: string, value: string) => {
         setFormDataJD((prev: any) => ({
             ...prev,
@@ -35,7 +45,7 @@ function CreateIntDialog() {
             formDataToSend.append('file', file);
             console.log(formDataToSend);
         }
-        if(formDataJD) {
+        if (formDataJD) {
             Object.keys(formDataJD).forEach((key) => {
                 formDataToSend.append(key, formDataJD[key]);
             });
@@ -48,6 +58,18 @@ function CreateIntDialog() {
                     'Content-Type': 'multipart/form-data'
                 }
             })
+            console.log(res);
+
+            const userid = await getUserId();
+            const resp = await saveInterviewQuestions({
+                resumeUrl: res.data?.resumeUrl,
+                questions: res.data.interviewQuestions,
+                uid: userid,
+                jobtitle: res.data?.jobTitle,
+                jobdescription: res.data?.JobDescription
+            })
+            console.log(resp);
+
         } catch (error) {
             console.log(error);
         } finally {
