@@ -18,6 +18,8 @@ import { useMutation } from 'convex/react'
 import { api } from '@/convex/_generated/api'
 import { useUserDetailContext } from '@/app/Provider'
 import { userDetailContext } from '@/context/userDetailContext'
+import { useRouter } from 'next/navigation'
+import { toast } from "sonner"
 
 function CreateIntDialog() {
     const [formDataJD, setFormDataJD] = useState<any>();
@@ -25,6 +27,7 @@ function CreateIntDialog() {
     const [loading, setLoading] = useState(false);
     const { userDetail, setUserDetail } = useContext(userDetailContext);
     const saveInterviewQuestions = useMutation(api.interview.saveInterviewQuestions);
+    const router = useRouter();
 
     async function getUserId(){
         const userid = await userDetail.then((res: any) => res._id);
@@ -59,21 +62,21 @@ function CreateIntDialog() {
                 }
             })
             if(res?.data?.status == 429){
-                console.log(res?.data?.result);
+                toast.warning(res?.data?.result);
                 return;
             }
-            console.log(res);
+            // console.log(res);
 
             const userid = await getUserId();
-            const resp = await saveInterviewQuestions({
+            const interviewId = await saveInterviewQuestions({
                 resumeUrl: res.data?.resumeUrl,
                 questions: res.data.interviewQuestions,
                 uid: userid,
                 jobtitle: res.data?.jobTitle,
                 jobdescription: res.data?.JobDescription
             })
-            console.log(resp);
-
+            console.log(interviewId);
+            router.push('/interview/' + interviewId);
         } catch (error) {
             console.log(error);
         } finally {

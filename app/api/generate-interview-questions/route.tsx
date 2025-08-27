@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
     const decision = await aj.protect(req, { userId: user?.primaryEmailAddress?.emailAddress ?? '', requested: 1 }); // Deduct 1 tokens from the bucket
     console.log("Arcjet decision", decision);
     // @ts-ignore
-    if (decision?.reason?.remaining === 0) {
+    if (decision?.reason?.remaining == 0) {
         return withCorsJson(req,{result: 'No token is left. Try after 24 hrs'},{status: 429})
     }
 
