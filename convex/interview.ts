@@ -7,7 +7,7 @@ export const saveInterviewQuestions = mutation({
         resumeUrl: v.optional(v.string()),
         jobtitle: v.optional(v.string()),
         jobdescription: v.optional(v.string()),
-        questions: v.any()
+        questions: v.any(),
     },
     handler: async (ctx, args) => {
         const result = await ctx.db.insert('InterviewSessionTable', {
@@ -16,7 +16,8 @@ export const saveInterviewQuestions = mutation({
             interviewQuestions: args.questions,
             jobTitle: args.jobtitle || null,
             jobDescription: args.jobdescription || null,
-            status: 'Draft'
+            status: 'Draft',
+            feedback: null
         })
         return result;
     }
@@ -26,9 +27,22 @@ export const getInterviewQuestions = query({
     args: {
         interviewId: v.id('InterviewSessionTable')
     },
-    handler: async (ctx, args) => {0
-        const result = await ctx.db.query('InterviewSessionTable').filter(q=> q.eq(q.field('_id'),args.interviewId)).collect();
+    handler: async (ctx, args) => {
+        const result = await ctx.db.query('InterviewSessionTable').filter(q => q.eq(q.field('_id'), args.interviewId)).collect();
 
         return result[0];
+    }
+})
+
+export const getInterviewList = query({
+    args: {
+        uid: v.id('UserTable')
+    },
+    handler: async (ctx, args) => {
+        const result = await ctx.db.query('InterviewSessionTable')
+            .filter(q => q.eq(q.field('userId'), args.uid))
+            .order('desc')
+            .collect();
+        return result;
     }
 })

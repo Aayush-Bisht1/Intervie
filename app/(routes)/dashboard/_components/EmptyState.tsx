@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import React from 'react'
 import logo from '@/app/_assets/interview.png'
-import CreateIntDialog from '../_components/CreateIntDialog'
+import CreateIntDialog from '../../_components/CreateIntDialog'
 
 function EmptyState() {
     return (
