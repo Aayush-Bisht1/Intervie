@@ -20,7 +20,7 @@ function InterviewCard({ interviewInfo }: props) {
                 {interviewInfo?.feedback &&
                     <Feedback feedbackInfo={interviewInfo.feedback}/>
                 }
-                <Link href={`/interview/${interviewInfo._id}`}>
+                <Link href={`/interview/${interviewInfo._id}/start`}>
                     <Button variant={'outline'}>Start Interview <ArrowRight /></Button>
                 </Link>
             </div>
