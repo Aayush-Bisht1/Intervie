@@ -1,6 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Check, Star, Zap, Crown } from "lucide-react";
+import Link from "next/link";
 
 const Pricing = () => {
   const plans = [
@@ -90,13 +91,12 @@ const Pricing = () => {
           {plans.map((plan, index) => {
             const Icon = plan.icon;
             return (
-              <div 
+              <div
                 key={index}
-                className={`relative bg-white/80 backdrop-blur-sm rounded-3xl border-2 p-8 hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 ${
-                  plan.popular 
-                    ? 'border-blue-500 shadow-xl shadow-blue-500/20' 
+                className={`relative bg-white/80 backdrop-blur-sm rounded-3xl border-2 p-8 hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 ${plan.popular
+                    ? 'border-blue-500 shadow-xl shadow-blue-500/20'
                     : 'border-gray-200 hover:border-blue-300'
-                }`}
+                  }`}
               >
                 {/* Popular Badge */}
                 {plan.popular && (
@@ -112,15 +112,15 @@ const Pricing = () => {
                   <div className={`w-16 h-16 mx-auto rounded-2xl bg-gradient-to-r ${plan.gradient} flex items-center justify-center mb-4 shadow-lg`}>
                     <Icon className="w-8 h-8 text-white" />
                   </div>
-                  
+
                   <h3 className="text-2xl font-bold text-gray-900 mb-2">
                     {plan.name}
                   </h3>
-                  
+
                   <p className="text-gray-600 mb-4">
                     {plan.description}
                   </p>
-                  
+
                   <div className="flex items-end justify-center mb-6">
                     <span className="text-5xl font-bold text-gray-900">
                       {plan.price}
@@ -139,7 +139,7 @@ const Pricing = () => {
                       <span className="text-gray-700">{feature}</span>
                     </div>
                   ))}
-                  
+
                   {plan.notIncluded.map((feature, featureIndex) => (
                     <div key={featureIndex} className="flex items-start opacity-50">
                       <div className="w-5 h-5 border-2 border-gray-300 rounded mr-3 mt-0.5 flex-shrink-0"></div>
@@ -149,17 +149,18 @@ const Pricing = () => {
                 </div>
 
                 {/* CTA Button */}
-                <Button 
-                  className={`w-full py-4 font-semibold rounded-xl transition-all duration-300 ${
-                    plan.popular
-                      ? 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg'
-                      : 'bg-gray-900 hover:bg-gray-800 text-white'
-                  }`}
-                >
-                  {plan.name === 'Free' ? 'Get Started Free' : 
-                   plan.name === 'Enterprise' ? 'Contact Sales' : 
-                   'Start Pro Trial'}
-                </Button>
+                <Link href={'/upgrade'}>
+                  <Button
+                    className={`w-full py-4 font-semibold rounded-xl transition-all duration-300 ${plan.popular
+                        ? 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg'
+                        : 'bg-gray-900 hover:bg-gray-800 text-white'
+                      }`}
+                  >
+                    {plan.name === 'Free' ? 'Get Started Free' :
+                      plan.name === 'Enterprise' ? 'Contact Sales' :
+                        'Start Pro Trial'}
+                  </Button>
+                </Link>
 
                 {plan.name === 'Pro' && (
                   <p className="text-center text-sm text-gray-600 mt-3">
