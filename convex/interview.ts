@@ -28,7 +28,7 @@ export const getInterviewQuestions = query({
         interviewId: v.id('InterviewSessionTable')
     },
     handler: async (ctx, args) => {
-        const result = await ctx.db.query('InterviewSessionTable').filter(q => q.eq(q.field('_id'), args.interviewId)).collect();
+        const result = await ctx.db.query('InterviewSessionTable').filter(q => q.eq(q.field('_id'), args.interviewId)).collect()
 
         return result[0];
     }
@@ -46,3 +46,29 @@ export const getInterviewList = query({
         return result;
     }
 })
+
+export const storeFeedback = mutation({
+    args: {
+        interviewId: v.string(),
+        feedback: v.object({
+            Score: v.number(),
+            strengths: v.array(v.string()),
+            weaknesses: v.array(v.string()),
+            recommendations: v.array(v.string())
+        }),
+    },
+    handler: async (ctx, args) => {
+        await ctx.db.patch(args.interviewId as any, {
+            feedback: args.feedback,
+            status: "Completed"
+        });
+    }
+})
+
+export const getFeedback = query({
+    args: { interviewId: v.string() },
+    handler: async (ctx, args) => {
+        const interview = await ctx.db.query('InterviewSessionTable').filter(q => q.eq(q.field('_id'),args.interviewId)).collect();
+        return interview;
+    },
+});
