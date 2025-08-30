@@ -50,25 +50,29 @@ export const getInterviewList = query({
 export const storeFeedback = mutation({
     args: {
         interviewId: v.string(),
-        feedback: v.object({
-            Score: v.number(),
-            strengths: v.array(v.string()),
-            weaknesses: v.array(v.string()),
-            recommendations: v.array(v.string())
-        }),
+        feedback: v.any()
     },
     handler: async (ctx, args) => {
         await ctx.db.patch(args.interviewId as any, {
             feedback: args.feedback,
             status: "Completed"
         });
+        return { success: true };
     }
 })
 
 export const getFeedback = query({
-    args: { interviewId: v.string() },
+    args: { interviewId: v.id('InterviewSessionTable') },
     handler: async (ctx, args) => {
-        const interview = await ctx.db.query('InterviewSessionTable').filter(q => q.eq(q.field('_id'),args.interviewId)).collect();
-        return interview;
-    },
+    const interview = await ctx.db.get(args.interviewId);
+    
+    if (!interview) {
+      throw new Error("Interview not found");
+    }
+    
+    return {
+      ...interview,
+      feedback: interview.feedback || null 
+    };
+  },
 });

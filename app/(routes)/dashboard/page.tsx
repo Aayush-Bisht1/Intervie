@@ -6,7 +6,7 @@ import CreateIntDialog from '../_components/CreateIntDialog';
 import { useConvex } from 'convex/react';
 import { userDetailContext } from '@/context/userDetailContext';
 import { api } from '@/convex/_generated/api';
-import { InterviewData } from '../interview/[interviewId]/start/page';
+import { InterviewData } from '../interview/[interviewId]/page';
 import InterviewCard from './_components/InterviewCard';
 import { Skeleton } from '@/components/ui/skeleton';
 

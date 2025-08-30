@@ -3,6 +3,7 @@ import React from "react";
 import { UserButton } from "@clerk/nextjs";
 import Image from "next/image";
 import logo from "@/app/_assets/intervie-logo.png";
+import Link from "next/link";
 
 const MenuOptions = [
     {
@@ -15,7 +16,7 @@ const MenuOptions = [
     },
     {
         name: "How it Works?",
-        path: "/how-it-works"
+        path: "/"
     }
 ]
 
@@ -40,9 +41,9 @@ function AppHeader() {
                             {
                                 MenuOptions.map((opt, idx) => {
                                     return (
-                                        <li key={idx} className="text-md hover:scale-105 hover:text-blue-600 transition-all cursor-pointer ">
+                                        <Link href={opt.path} key={idx} className="text-md hover:scale-105 hover:text-blue-600 transition-all cursor-pointer ">
                                             {opt.name}
-                                        </li>
+                                        </Link>
                                     )
                                 })
                             }

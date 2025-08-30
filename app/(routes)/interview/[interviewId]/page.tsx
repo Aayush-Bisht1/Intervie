@@ -2,7 +2,7 @@
 import { FeedbackInfo } from '@/app/(routes)/dashboard/_components/Feedback';
 import { api } from '@/convex/_generated/api';
 import { useConvex } from 'convex/react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import React, { useEffect, useState, useCallback } from 'react'
 import Vapi from '@vapi-ai/web';
 import profile from '@/app/_assets/interviewer.png'
@@ -32,16 +32,17 @@ export type TranscriptMessage = {
 function StartInterview() {
     const { interviewId } = useParams();
     const convex = useConvex();
+    const router = useRouter();
 
     // State management
     const [interviewQuestions, setInterviewQuestions] = useState<string[]>([])
     const [messages, setMessages] = useState<TranscriptMessage[]>([])
     const [callStarted, setCallStarted] = useState(false)
-    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
     const [isLoading, setIsLoading] = useState(true)
     const [callDuration, setCallDuration] = useState(0)
     const [vapi, setVapi] = useState<Vapi | null>(null)
     const [processedMessageIds, setProcessedMessageIds] = useState<Set<string>>(new Set())
+    const [isGeneratingFeedback, setIsGeneratingFeedback] = useState(false)
 
     // Initialize VAPI
     useEffect(() => {
@@ -65,6 +66,11 @@ function StartInterview() {
             });
 
             // console.log('Fetched questions:', result.interviewQuestions);
+            if (result.status === 'Completed') {
+                console.log('Interview already completed, redirecting to dashboard');
+                router.push('/dashboard');
+                return;
+            }
 
             if (result.interviewQuestions && Array.isArray(result.interviewQuestions)) {
                 setInterviewQuestions(result.interviewQuestions);
@@ -78,7 +84,7 @@ function StartInterview() {
         } finally {
             setIsLoading(false);
         }
-    }, [convex, interviewId]);
+    }, [convex, interviewId, router]);
 
     // Start the call with existing VAPI agent
     const startCall = useCallback(async () => {
@@ -115,12 +121,17 @@ function StartInterview() {
     // Generate feedback from transcript using LLM
     const generateAndStoreFeedback = async () => {
         try {
+            setIsGeneratingFeedback(true);
             console.log('Generating feedback from transcript...');
 
             if (messages.length === 0) {
                 console.log('No messages to generate feedback from');
                 return;
             }
+            // Calculate interview stats
+            const userMessages = messages.filter(msg => msg.role === 'user');
+            const totalQuestions = interviewQuestions.length;
+            const questionsAttempted = userMessages.length;
 
             // Prepare transcript for LLM
             const conversationText = messages.map(msg =>
@@ -131,7 +142,9 @@ function StartInterview() {
             const response = await axios.post('/api/generate-feedback', {
                 transcript: conversationText,
                 interviewQuestions: interviewQuestions,
-                interviewId: interviewId
+                interviewId: interviewId,
+                questionsAttempted,
+                totalQuestions
             }, {
                 headers: {
                     'Content-Type': 'application/json',
@@ -150,6 +163,9 @@ function StartInterview() {
             });
 
             console.log('Feedback generated and stored successfully');
+            setTimeout(() => {
+                router.push('/dashboard');
+            }, 1500);
 
         } catch (error) {
             console.error('Error generating feedback:', error);
@@ -179,32 +195,34 @@ function StartInterview() {
         vapi.on('message', (message: any) => {
             console.log('Received message:', message);
 
-            if (message.type === 'transcript') {
+            if (message.type === 'transcript' && message.transcript?.trim()) {
+                // Create unique message ID to prevent duplicates
                 const messageId = `${message.role}-${Date.now()}-${Math.random()}`;
-
+                
                 // Check if we've already processed this message
                 if (processedMessageIds.has(messageId)) {
                     return;
                 }
+
                 const newMessage: TranscriptMessage = {
                     role: message.role === 'assistant' ? 'assistant' : 'user',
-                    content: message.transcript,
+                    content: message.transcript.trim(),
                     timestamp: new Date(),
                     messageId: messageId
                 };
 
                 setMessages(prev => {
                     // Additional check to prevent duplicate content
-                    const isDuplicate = prev.some(msg =>
-                        msg.role === newMessage.role &&
+                    const isDuplicate = prev.some(msg => 
+                        msg.role === newMessage.role && 
                         msg.content === newMessage.content &&
-                        Math.abs(msg.timestamp.getTime() - newMessage.timestamp.getTime()) < 1000 // Within 1 second
+                        Math.abs(msg.timestamp.getTime() - newMessage.timestamp.getTime()) < 2000 // Within 2 seconds
                     );
-
+                    
                     if (isDuplicate) {
                         return prev;
                     }
-
+                    
                     return [...prev, newMessage];
                 });
 
@@ -272,6 +290,18 @@ function StartInterview() {
         );
     }
 
+    if (isGeneratingFeedback) {
+        return (
+            <div className="flex items-center justify-center min-h-screen">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                    <div className="text-lg font-medium">Generating your feedback...</div>
+                    <div className="text-sm text-gray-600 mt-2">This may take a few moments</div>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className='flex flex-col md:flex-row w-full min-h-screen bg-gray-100'>
             {/* Main Interview Area */}
@@ -321,6 +351,7 @@ function StartInterview() {
                                 onClick={startCall}
                                 disabled={interviewQuestions.length === 0}
                                 className="flex items-center gap-2"
+                                variant={'mine'}
                             >
                                 <PhoneCall className="h-4 w-4" />
                                 Start Interview
