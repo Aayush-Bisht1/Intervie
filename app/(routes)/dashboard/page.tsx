@@ -33,7 +33,12 @@ function Dashboard() {
     const result = await convex.query(api.interview.getInterviewList, {
       uid: userId
     });
-    setInterviewList(result);
+    setInterviewList(
+      result.map((item) => ({
+        ...item,
+        feedback: item.feedback !== undefined ? item.feedback : null
+      }))
+    );
     setLoading(false);
   }
   console.log(interviewList);
