@@ -14,6 +14,7 @@ import type {
   FunctionReference,
 } from "convex/server";
 import type * as interview from "../interview.js";
+import type * as liveInterview from "../liveInterview.js";
 import type * as users from "../users.js";
 
 /**
@@ -26,6 +27,7 @@ import type * as users from "../users.js";
  */
 declare const fullApi: ApiFromModules<{
   interview: typeof interview;
+  liveInterview: typeof liveInterview;
   users: typeof users;
 }>;
 export declare const api: FilterApi<

@@ -34,29 +34,58 @@ app.prepare().then(() => {
     io.on('connection', (socket) => {
         console.log('Client connected:', socket.id);
 
-        socket.on('join-room', (roomId: string) => {
+        socket.on('join-room', (roomId) => {
             socket.join(roomId);
-            socket.to(roomId).emit('user-joined', socket.id);
-            console.log(`Socket ${socket.id} joined room ${roomId}`);
+            const room = io.sockets.adapter.rooms.get(roomId);
+            const numUsers = room ? room.size : 0;
+            
+            console.log(`Socket ${socket.id} joined room ${roomId} (${numUsers} users in room)`);
+            
+            // Get all sockets in the room
+            const socketsInRoom = Array.from(room || []);
+            
+            // Notify others in the room that a new user joined
+            socket.to(roomId).emit('user-joined', {
+                userId: socket.id,
+                roomSize: numUsers
+            });
+            
+            // Notify the joining user about existing users
+            if (numUsers > 1) {
+                // Wait a bit to ensure the socket is fully joined
+                setTimeout(() => {
+                    socket.emit('existing-users', {
+                        roomSize: numUsers - 1,
+                        existingUserIds: socketsInRoom.filter(id => id !== socket.id)
+                    });
+                }, 100);
+            }
         });
 
-        socket.on('offer', (data: { offer: any; roomId: string }) => {
+        socket.on('offer', (data) => {
             socket.to(data.roomId).emit('offer', {
                 offer: data.offer,
                 senderId: socket.id
             });
         });
 
-        socket.on('answer', (data: { answer: any; roomId: string }) => {
+        socket.on('answer', (data) => {
             socket.to(data.roomId).emit('answer', {
                 answer: data.answer,
                 senderId: socket.id
             });
         });
 
-        socket.on('ice-candidate', (data: { candidate: any; roomId: string }) => {
+        socket.on('ice-candidate', (data) => {
             socket.to(data.roomId).emit('ice-candidate', {
                 candidate: data.candidate,
+                senderId: socket.id
+            });
+        });
+
+        socket.on('code-change', (data) => {
+            socket.to(data.roomId).emit('code-change', {
+                change: data.change,
                 senderId: socket.id
             });
         });

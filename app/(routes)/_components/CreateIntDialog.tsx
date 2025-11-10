@@ -79,7 +79,7 @@ function CreateIntDialog() {
 
             // Get user ID
             const userId = await getUserId();
-            / Create interview in database
+            // Create interview in database
             const interviewId = await createLiveInterview({
                 interviewerId: userId,
                 interviewerName: liveInterviewData.interviewerName,
@@ -94,19 +94,28 @@ function CreateIntDialog() {
             });
 
             // Send emails
-            await axios.post('/api/send-interview-email', {
-                interviewerEmail: liveInterviewData.interviewerEmail,
-                interviewerName: liveInterviewData.interviewerName,
-                candidateEmail: liveInterviewData.candidateEmail,
-                candidateName: liveInterviewData.candidateName,
-                interviewLink: interviewLink,
-                scheduledTime: liveInterviewData.scheduledTime,
-                position: liveInterviewData.position,
-                duration: duration,
-                interviewType: interviewType,
-            });
+            try {
+                const emailResponse = await axios.post('/api/send-interview-email', {
+                    interviewerEmail: liveInterviewData.interviewerEmail,
+                    interviewerName: liveInterviewData.interviewerName,
+                    candidateEmail: liveInterviewData.candidateEmail,
+                    candidateName: liveInterviewData.candidateName,
+                    interviewLink: interviewLink,
+                    scheduledTime: liveInterviewData.scheduledTime,
+                    position: liveInterviewData.position,
+                    duration: duration,
+                    interviewType: interviewType,
+                });
 
-            toast.success('Interview scheduled successfully! Emails sent to both parties.');
+                if (emailResponse.data.success) {
+                    toast.success('Interview scheduled successfully! Email sent to candidate.');
+                } else {
+                    toast.warning('Interview scheduled but email failed to send. Please notify the candidate manually.');
+                }
+            } catch (emailError: any) {
+                console.error('Email error:', emailError);
+                toast.warning('Interview scheduled but email failed to send. Please notify the candidate manually.');
+            }
             
             // Reset form
             setLiveInterviewData({
@@ -115,9 +124,7 @@ function CreateIntDialog() {
                 candidateName: '',
                 candidateEmail: '',
                 position: '',
-                duration: '30',
                 scheduledTime: '',
-                interviewType: 'technical'
             });
             
             // Close dialog (you might need to handle this differently)

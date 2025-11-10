@@ -60,6 +60,32 @@ export const getLiveInterviewsByInterviewer = query({
     }
 });
 
+export const getAllInterviewsByUser = query({
+    args: {
+        userId: v.id('UserTable')
+    },
+    handler: async (ctx, args) => {
+        // Get AI interviews
+        const aiInterviews = await ctx.db
+            .query('InterviewSessionTable')
+            .filter(q => q.eq(q.field('userId'), args.userId))
+            .order('desc')
+            .collect();
+
+        // Get live interviews where user is interviewer
+        const liveInterviews = await ctx.db
+            .query('LiveInterviewTable')
+            .withIndex('by_interviewer', q => q.eq('interviewerId', args.userId))
+            .order('desc')
+            .collect();
+
+        return {
+            aiInterviews,
+            liveInterviews
+        };
+    }
+});
+
 export const updateInterviewStatus = mutation({
     args: {
         interviewId: v.id('LiveInterviewTable'),

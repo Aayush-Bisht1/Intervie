@@ -8,11 +8,13 @@ import { userDetailContext } from '@/context/userDetailContext';
 import { api } from '@/convex/_generated/api';
 import { InterviewData } from '../interview/[interviewId]/page';
 import InterviewCard from './_components/InterviewCard';
+import LiveInterviewCard, { LiveInterviewData } from './_components/LiveInterviewCard';
 import { Skeleton } from '@/components/ui/skeleton';
 
 function Dashboard() {
   const { user } = useUser();
   const [interviewList, setInterviewList] = useState<InterviewData[]>([]);
+  const [liveInterviewList, setLiveInterviewList] = useState<LiveInterviewData[]>([]);
   const { userDetail, setUserDetail } = useContext(userDetailContext);
   const [loading, setLoading] = useState(true)
   const convex = useConvex();
@@ -30,18 +32,27 @@ function Dashboard() {
   const getInterviewList = async () => {
     setLoading(true);
     const userId = await getUserId();
-    const result = await convex.query(api.interview.getInterviewList, {
+    
+    // Get AI interviews
+    const aiInterviews = await convex.query(api.interview.getInterviewList, {
       uid: userId
     });
     setInterviewList(
-      result.map((item) => ({
+      aiInterviews.map((item) => ({
         ...item,
         feedback: item.feedback !== undefined ? item.feedback : null
       }))
     );
+
+    // Get live interviews
+    const liveInterviews = await convex.query(api.liveInterview.getLiveInterviewsByInterviewer, {
+      interviewerId: userId
+    });
+    setLiveInterviewList(liveInterviews);
+    
     setLoading(false);
   }
-  console.log(interviewList);
+  console.log(interviewList, liveInterviewList);
 
   return (
     <div className='mt-5 py-20 px-10 md:px-28 lg:px-44 xl:px-56'>
@@ -54,21 +65,43 @@ function Dashboard() {
       </div>
       { 
       !loading &&
-        interviewList.length == 0 ? (
+        interviewList.length == 0 && liveInterviewList.length == 0 ? (
           <EmptyState />
         ) : (
-          <div className='grid grid-cols-2 md:grid-cols-3 gap-5 mt-10'>
-            {
-              interviewList.map((int, idx) => (
-                <InterviewCard interviewInfo={int} key={idx} />
-              ))
-            }
-          </div>
+          <>
+            {/* Live Interviews Section */}
+            {liveInterviewList.length > 0 && (
+              <div className='mt-10'>
+                <h3 className='text-xl font-semibold text-gray-800 mb-4'>Live Interviews</h3>
+                <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5'>
+                  {
+                    liveInterviewList.map((int) => (
+                      <LiveInterviewCard interviewInfo={int} key={int._id} />
+                    ))
+                  }
+                </div>
+              </div>
+            )}
+
+            {/* AI Interviews Section */}
+            {interviewList.length > 0 && (
+              <div className={`mt-10 ${liveInterviewList.length > 0 ? 'border-t pt-10' : ''}`}>
+                <h3 className='text-xl font-semibold text-gray-800 mb-4'>AI Interviews</h3>
+                <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5'>
+                  {
+                    interviewList.map((int, idx) => (
+                      <InterviewCard interviewInfo={int} key={idx} />
+                    ))
+                  }
+                </div>
+              </div>
+            )}
+          </>
         )
       }
       {
         loading &&
-        <div className='grid grid-cols-2 md:grid-cols-3 gap-5 mt-10'>
+        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-10'>
           {
             [1, 2, 3, 4, 5, 6].map((item, idx) => (
               <div className="flex flex-col space-y-3" key={idx}>
