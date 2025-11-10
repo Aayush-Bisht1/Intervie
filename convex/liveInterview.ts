@@ -102,3 +102,13 @@ export const updateInterviewStatus = mutation({
         return { success: true };
     }
 });
+
+export const deleteLiveInterview = mutation({
+    args: {
+        interviewId: v.id("LiveInterviewTable"),
+    },
+    handler: async (ctx, args) => {
+        await ctx.db.delete(args.interviewId);
+        return { success: true };
+    },
+});
