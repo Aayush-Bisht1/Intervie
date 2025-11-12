@@ -27,6 +27,8 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "convex": "^1.26.1",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
     "imagekit": "^6.0.0",
     "lucide-react": "^0.540.0",
     "monaco-editor": "^0.45.0",
